@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+// LoginScreen.js
+import React from 'react';
 import {
   View,
   Text,
@@ -7,33 +8,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-  Platform,
-  Button,
+  ActivityIndicator,
 } from 'react-native';
-import { supabase } from '../supabaseClient';
-import { signInWithGoogle } from '../auth';
 
-const LoginScreen = ({ navigation }) => {
-  const [user, setUser] = useState(null);
+const { width, height } = Dimensions.get('window');
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => {
-      listener.subscription.unsubscribe();
-    };
-  }, []);
-
-  async function handleLogout() {
-    await supabase.auth.signOut();
-  }
-
+const LoginScreen = ({ navigation, onGoogleButtonPress, loading }) => {
   return (
     <ImageBackground
       style={styles.container}
@@ -42,22 +22,21 @@ const LoginScreen = ({ navigation }) => {
     >
       <View style={styles.overlay} />
       <View style={styles.card}>
-        <Image
-          source={require('../assets/favicon.png')}
-          style={styles.logo}
-        />
+        <Image source={require('../assets/favicon.png')} style={styles.logo} />
         <Text style={styles.title}>CHATLET</Text>
         <Text style={styles.slogan}>Save your time and</Text>
         <Text style={styles.slogan}>ace your exam</Text>
-
-        <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={signInWithGoogle}>
-              <Image
-                source={require('../assets/google.png')}
-                style={styles.googleButton}
-              />
-            </TouchableOpacity>
-        </View>
+        
+        {loading ? (
+          <ActivityIndicator size="large" color="#5829FF" style={styles.loader} />
+        ) : (
+          <TouchableOpacity onPress={onGoogleButtonPress}>
+            <Image
+              source={require('../assets/google.png')}
+              style={styles.googleButton}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </ImageBackground>
   );
@@ -66,8 +45,8 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width,
-    height,
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -78,47 +57,29 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   logo: {
-    width: width * 0.2,
-    height: width * 0.2,
-    borderRadius: 12,
+    width: width * 0.3,
+    height: width * 0.3,
+    borderRadius: 23,
     marginBottom: height * 0.02,
   },
   title: {
-    fontSize: width * 0.17,
+    fontFamily: 'jaro',
+    fontSize: 65,
     color: '#5829FF',
-    fontWeight: 'bold',
-    fontFamily: 'Jaro',
-    textShadowColor: 'rgba(92, 83, 255, 0.3)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 5,
-    letterSpacing: 2,
-    marginBottom: height * 0.025,
   },
   slogan: {
-    fontSize: width * 0.095,
+    fontFamily: 'jaro',
+    fontSize: 32.5,
     color: '#5829FF',
-    fontWeight: 'bold',
-    fontFamily: 'Jaro',
-    textShadowColor: 'rgba(92, 83, 255, 0.3)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 5,
-    letterSpacing: 1.5,
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    marginTop: height * 0.05,
-    alignItems: 'center',
   },
   googleButton: {
-    width: width * 0.9,
-    height: height * 0.1,
+    width: width * 0.75,
+    height: height * 0.28,
     resizeMode: 'contain',
     borderRadius: 10,
   },
-  loggedInText: {
-    fontSize: width * 0.045,
-    marginBottom: 10,
-    color: '#444',
+  loader: {
+    marginTop: 20,
   },
 });
 

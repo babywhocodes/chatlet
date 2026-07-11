@@ -2,6 +2,7 @@
   "expo": {
     "name": "chatlet",
     "slug": "chatlet",
+    "scheme": "com.babywhocodes.chatlet",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,24 +15,31 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mebadguy1.chatlet"
+      "bundleIdentifier": "com.babywhocodes.chatlet"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.mebadguy1.chatlet"
+      "package": "com.babywhocodes.chatlet"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "@react-native-google-signin/google-signin",
+      "@react-native-firebase/app",
+      "expo-font",
+      "expo-web-browser",
+      "expo-secure-store",
+      "expo-router"
     ],
     "extra": {
+      "router": {},
       "eas": {
-        "projectId": "218cdbe1-bd3b-426d-ab37-fd5e6ea04352"
+        "projectId": "e8354e13-8fd3-4362-8535-0d328c5f4034"
       }
     }
   }

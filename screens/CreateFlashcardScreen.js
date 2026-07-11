@@ -53,7 +53,7 @@ const CreateFlashcardScreen = ({ navigation }) => {
     setCurrentCardIndex(0);
     setDeckId(null);
   }, []);
-
+  
   const saveDeck = useCallback(async () => {
     try {
       const deck = {
@@ -63,10 +63,11 @@ const CreateFlashcardScreen = ({ navigation }) => {
         cards: flashcards,
         createdAt: new Date().toISOString(),
       };
+  
       await saveDeckToStorage(deck);
       Alert.alert('Success', 'Deck saved successfully!');
       resetForm();
-      navigation.goBack();
+      navigation.navigate('Home', { refresh: true });
     } catch (error) {
       Alert.alert('Error', 'Failed to save deck');
     }
@@ -77,16 +78,27 @@ const CreateFlashcardScreen = ({ navigation }) => {
     setIsLoading(true);
 
     try {
-      const prompt = `Generate exactly ${quantity} flashcards about "${title}" on topic "${description}". 
-      Return ONLY a JSON array where each flashcard has:
-      - id (number starting from 1)
-      - question (string)
-      - answer (string)
-      
-      Example format:
-      [{"id":1,"question":"Question text","answer":"Answer text"}]
-      
-      IMPORTANT: Return ONLY the JSON array with no additional text or markdown formatting.`;
+      const prompt = `You are an expert tutor creating study flashcards.
+
+Deck title: "${title}"
+Topic/description: "${description}"
+
+Generate exactly ${quantity} flashcards that help someone learn this topic.
+
+Requirements:
+- Cover a range of distinct facts, concepts, or sub-topics — do not repeat the same idea in different words.
+- Questions should be clear, specific, and answerable without seeing the deck description.
+- Answers should be concise (ideally 1-2 sentences) but complete enough to stand alone.
+- Vary question style where appropriate (definitions, examples, comparisons, cause/effect) rather than making every card follow the same template.
+- Do not number the questions or include phrases like "Question 1" in the text.
+
+Return ONLY a valid JSON array, with no markdown formatting, no code fences, and no explanatory text before or after it. Each element must be an object with exactly these fields:
+- "id": number, starting from 1 and incrementing by 1
+- "question": string
+- "answer": string
+
+Example format:
+[{"id":1,"question":"What is the powerhouse of the cell?","answer":"The mitochondria, which generates ATP through cellular respiration."}]`;
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -95,9 +107,9 @@ const CreateFlashcardScreen = ({ navigation }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'accounts/fireworks/models/llama-v3p1-8b-instruct',
+          model: 'accounts/fireworks/models/gpt-oss-120b',
           messages: [{ role: 'user', content: prompt }],
-          max_tokens: 400,
+          max_tokens: 600,
           top_p: 1,
           top_k: 40,
           presence_penalty: 0,
@@ -138,8 +150,6 @@ const CreateFlashcardScreen = ({ navigation }) => {
       Alert.alert('Error', error.message || 'Failed to generate flashcards. Please try again.');
     } finally {
       setIsLoading(false);
-      setFlashcards(validatedCards);
-      setShowPreview(true);
     }
   }, [title, description, quantity, validateInputs]);
 
@@ -167,9 +177,9 @@ const CreateFlashcardScreen = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={styles.createHeader}>
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
-             <AntDesign name="left" size={34} color="#777"  />
+            onPress={() => navigation.navigate('Home')}
+            >
+             <AntDesign name="left" size={40} color="#5829FF"  />
           </TouchableOpacity>
           <Text style={styles.createTitle}>New Flashcard</Text>
       </View>
@@ -195,7 +205,7 @@ const CreateFlashcardScreen = ({ navigation }) => {
           multiline
           numberOfLines={4}
           textAlignVertical="top"
-          accessibility  accessibilityLabel="Deck description input"
+          accessibilityLabel="Deck description input"
           returnKeyType="next"
         />
 

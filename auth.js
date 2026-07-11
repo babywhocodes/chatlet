@@ -1,19 +1,19 @@
-// auth.js
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 import { supabase } from './supabaseClient';
 
 WebBrowser.maybeCompleteAuthSession();
 
-export async function signInWithGoogle() {
-  const redirectTo = AuthSession.makeRedirectUri({
-    useProxy: true,
-  });
+const redirectUri = AuthSession.makeRedirectUri({
+  native: 'com.mebadguy1.chatlet:/auth/callback',
+  useProxy: false,
+});
 
+export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo,
+      redirectTo: redirectUri,
     },
   });
 
@@ -23,12 +23,18 @@ export async function signInWithGoogle() {
   }
 
   const authUrl = data?.url;
+
   if (authUrl) {
-    const result = await AuthSession.startAsync({ authUrl });
+    console.log('Calling startAsync...');
+    const result = await AuthSession.startAsync({
+      authUrl,
+      returnUrl: redirectUri,
+    });
+
     if (result.type === 'success') {
-      console.log('✅ Google login successful!');
+      console.log('✅ Login successful!');
     } else {
-      console.warn('❌ Login cancelled or failed');
+      console.warn('❌ Login canceled or failed');
     }
   }
 }

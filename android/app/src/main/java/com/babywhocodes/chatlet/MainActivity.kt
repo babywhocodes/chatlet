@@ -1,4 +1,4 @@
-package com.mebadguy1.chatlet
+package com.babywhocodes.chatlet
 
 import android.os.Build
 import android.os.Bundle

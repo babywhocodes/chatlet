@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "292221553826",
+    "project_id": "chatlet-5a852",
+    "storage_bucket": "chatlet-5a852.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292221553826:android:99bd3737922b1bd82b5bfb",
+        "android_client_info": {
+          "package_name": "com.babywhocodes.chatlet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292221553826-ogai37vckfguc337a8oc1ehoe2oatefm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.babywhocodes.chatlet",
+            "certificate_hash": "90a42c499f1a3f4eeda8370d9b62908b5b73c897"
+          }
+        },
+        {
+          "client_id": "292221553826-85brvhum90n6a4h3nv6qchsqr500l0pt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArtXlrYip1GZlsbtATG4wnRzp-O2q10BA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292221553826-85brvhum90n6a4h3nv6qchsqr500l0pt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

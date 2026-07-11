@@ -1,4 +1,4 @@
-export const API_KEY = 'fw_3ZVYq7876f44yCGPCNhsSidX';
+export const API_KEY = 'fw_3ZgeGT4BUyRtmqWW8Kqx9VvY';
 export const MAX_CARDS = 20;
 export const MIN_CARDS = 1;
 export const STORAGE_KEY = 'flashcardDecks';

@@ -9,15 +9,16 @@ import {
   Image,
   SafeAreaView,
   FlatList,
+  RefreshControl,
   Alert,
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import DeckCard from '../components/DeckCard';
 import { loadDecks, deleteDeck } from '../utils/storage';
 import { ThemeContext } from '../context/ThemeContext';
 import { AntDesign } from '@expo/vector-icons';
-import { supabase } from '../supabaseClient';
 
 const HomeScreen = ({ navigation }) => {
   const { isLight } = useContext(ThemeContext);
@@ -62,6 +63,16 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     fetchDecks();
   }, [fetchDecks]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchDecks();
+    setRefreshing(false);
+  }, [fetchDecks]);
+
+  React.useEffect(() => {
+    fetchDecks();
+  }, [fetchDecks]);
   const handleRefresh = useCallback(() => {
     setRefreshing(true);
     fetchDecks(1);
@@ -88,6 +99,22 @@ const HomeScreen = ({ navigation }) => {
     },
     [navigation]
   );
+  
+  const handleTestMode = useCallback(
+    (deck) => {
+      if (!deck) {
+        console.warn('Attempted to navigate to ViewDeck with undefined deck');
+        Alert.alert('Error', 'No deck selected');
+        return;
+      }
+      navigation.navigate('TestMode', { deck });
+    },
+    [navigation]
+  );
+const handleDeckCreated = useCallback((deck) => {
+  setDecks(prev => [deck, ...prev]);
+}, []);
+
   const handleSettings = useCallback(() => {
     if (isNavigating) return;
     setIsNavigating(true);
@@ -118,44 +145,43 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.create}>
         <TouchableOpacity
           style={isLight ? styles.creatorLight : styles.creatorDark}
-          onPress={() => navigation.navigate('CreateFlashcard')}>
+          onPress={() => navigation.navigate('CreateFlashcard', { onSave: handleDeckCreated })}>
           <Text style={styles.creatorText}>✨ Generate New Flashcard</Text>
         </TouchableOpacity>
       </View>
+    <View style={styles.historyContainer}>
+      <Text style={styles.htext}>History ⤷</Text>
 
-      <View style={styles.historyContainer}>
-        <Text style={styles.htext}>History ⤷</Text>
-
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          scrollEnabled={true}
-          nestedScrollEnabled={true}
-          style={{ flex: 1 }}
-          scrollEventThrottle={16}
-          stickyHeaderIndices={[0]}
-          snapToInterval={120}
-          snapToAlignment="start"
-          decelerationRate="fast">
-          {decks.length > 0 ? (
-            decks.map((item) => (
-              <DeckCard
-                key={item.id.toString()}
-                deck={item}
-                onPress={() => handleViewDeck(item)}
-                onDelete={() => handleDeleteDeck(item.id, item.title)}
-                minHeight={100}
-              />
-            ))
-          ) : !loading ? (
+      <FlatList
+        data={[...decks].reverse()}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <DeckCard
+            deck={item} 
+            onFlashcardMode={() => handleViewDeck(item)} 
+            onTestMode={() => handleTestMode(item)}
+            onDelete={() => handleDeleteDeck(item.id, item.title)}
+            minHeight={100}
+          />
+        )}
+        ListEmptyComponent={
+          !loading ? (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>No flashcard decks found</Text>
               <Text style={styles.emptySubtext}>
                 Create your first deck to get started
               </Text>
             </View>
-          ) : null}
-        </ScrollView>
-      </View>
+          ) : null
+        }
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        contentContainerStyle={{ paddingBottom: 20 }}
+        showsVerticalScrollIndicator={true}
+      />
+    </View>
+
     </SafeAreaView>
   );
 };
@@ -176,7 +202,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#5829FF',
     borderBottomWidth: 3,
     paddingLeft: 15,
-    paddingTop: 18,
+    paddingTop: 4,
     paddingRight: 15,
   },
   headtext: {
@@ -186,23 +212,24 @@ const styles = StyleSheet.create({
   },
   create: {
     marginTop: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
+    marginHorizontal:10
   },
   creatorLight: {
     backgroundColor: '#5829FF',
     borderRadius: 15,
-    padding: 20,
+    padding: 15,
     alignItems: 'center',
   },
   creatorDark: {
     backgroundColor: '#5829FF',
     borderRadius: 15,
-    padding: 20,
+    padding: 15,
     alignItems: 'center',
   },
   creatorText: {
     fontFamily: 'Inter-Black',
-    fontSize: 22,
+    fontSize: 25,
     color: '#ffffff',
   },
   htext: {
@@ -213,8 +240,9 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 10,
   },
-  historyContainer: {
+  historyContainer: { 
     flex: 1,
+    marginTop: 1,
     paddingHorizontal: 5,
   },
   emptyContainer: {
