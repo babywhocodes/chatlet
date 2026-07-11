@@ -39,8 +39,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "e8354e13-8fd3-4362-8535-0d328c5f4034"
+        "projectId": "bd046a94-e822-41d5-b550-30795bd81dbb"
       }
-    }
+    },
+    "owner": "reallbadiees-team"
   }
 }
