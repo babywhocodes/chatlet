@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Button, Alert } from 'react-native';
 import { ThemeContext } from '../context/ThemeContext';
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, Octicons, Feather } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { getAuth, signOut } from '@react-native-firebase/auth';
@@ -48,44 +48,44 @@ const SettingScreen = ({ navigation, user, onSignOut }) => {
         onPress={() => navigation.navigate('Home')}>
         <AntDesign name="left" size={40} color="#5829FF"  />
         </TouchableOpacity>
-        <Text style={isLight ? styles.headLight : styles.headDark}>
+        <Text style={isLight ? styles.headLight : styles.headDark} allowFontScaling={false}>
           Settings
         </Text>
         <View style={{ width: 60 }} />
       </View>
       <View style={styles.content}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
-    <FontAwesome name="user-circle" size={70} color="black" style={isLight ? styles.iconLight : styles.iconDark}/>
+    <Feather name="user" size={55} color="black" style={isLight ? styles.iconLight : styles.iconDark}/>
     <View style={{ marginLeft: '20',}}>
-      <Text style={isLight ? styles.nameLight : styles.nameDark}>{user.displayName} (Free user)</Text>
+      <Text style={isLight ? styles.nameLight : styles.nameDark} allowFontScaling={false}>{user.displayName} (Free user)</Text>
       <Text style={{ color: 'gray' }}>{user.email}</Text>
     </View>
   </View>
         <TouchableOpacity onPress={toggleTheme} activeOpacity={0.8}>
-          <Text style={isLight ? styles.titleLight : styles.titleDark}>
+          <Text style={isLight ? styles.titleLight : styles.titleDark} allowFontScaling={false}>
              {isLight ?  '🌙 Dark Mode ' : '☀️ Light Mode ' }
           </Text>
         </TouchableOpacity>
       <TouchableOpacity
         onPress={() => navigation.navigate('HelpScreen')}>
-        <Text style={isLight ? styles.titleLight : styles.titleDark}>
-           <Entypo name="help-with-circle" size={31} color="#5829FF" />  Help
+        <Text style={isLight ? styles.titleLight : styles.titleDark} allowFontScaling={false}>
+           <Entypo name="help" size={31} color="#5829FF" />  Help
           </Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => navigation.navigate('AboutUsScreen')}>
-        <Text style={isLight ? styles.titleLight : styles.titleDark}>
-           <AntDesign name="infocirlce" size={35} color="#5829FF" />  About us
+        <Text style={isLight ? styles.titleLight : styles.titleDark} allowFontScaling={false}>
+           <Octicons name="people" size={35} color="#5829FF" />  About us
         </Text>
         </TouchableOpacity>
       <TouchableOpacity
         onPress={() => navigation.navigate('ReportbugScreen')}>
-        <Text style={isLight ? styles.titleLight : styles.titleDark}>
+        <Text style={isLight ? styles.titleLight : styles.titleDark} allowFontScaling={false}>
            <Entypo name="bug" size={35} color="#5829FF" />  Report Bugs
         </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSignOut}>
-        <Text style={styles.logout}>
+        <Text style={styles.logout} allowFontScaling={false}>
            <Entypo name="log-out" size={35} color="#ff0000" />  Log Out
         </Text>
       </TouchableOpacity>
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
+    paddingTop: 10,
   },
   light: {
     backgroundColor: '#f5f5f5',

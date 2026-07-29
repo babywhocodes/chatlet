@@ -69,11 +69,13 @@ export default function AboutUsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   light: {
+    paddingTop: 10,
     backgroundColor: '#f5f5f5',
     flex: 1,
     padding: 8,
   },
   dark: {
+    paddingTop: 10,
     backgroundColor: '#121212',
     flex: 1,
     padding: 8,

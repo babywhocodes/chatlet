@@ -14,11 +14,13 @@ import React, {
   } from 'react-native';
   import { AntDesign, FontAwesome } from '@expo/vector-icons';
   import { ThemeContext } from '../context/ThemeContext';
-  
+
+  const OPTION_LETTERS = ['A', 'B', 'C', 'D'];
+
   const TestModeScreen = ({ route, navigation }) => {
     const { isLight } = useContext(ThemeContext);
     const originalDeck = route.params?.deck;
-  
+
     const [currentDeck, setCurrentDeck] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isShuffled, setIsShuffled] = useState(false);
@@ -28,7 +30,7 @@ import React, {
     const [missedCards, setMissedCards] = useState([]);
     const [streak, setStreak] = useState(0);
     const [bestStreak, setBestStreak] = useState(0);
-  
+
     const shuffleArray = (array) => {
       let currentIndex = array.length,
         randomIndex;
@@ -43,7 +45,7 @@ import React, {
       }
       return newArray;
     };
-  
+
     useEffect(() => {
       if (originalDeck?.cards) {
         let cards = [...originalDeck.cards];
@@ -75,7 +77,7 @@ import React, {
         console.warn('TestModeScreen accessed without deck params');
       }
     }, [originalDeck, isShuffled]);
-  
+
     if (!originalDeck) {
       return (
         <SafeAreaView
@@ -102,7 +104,7 @@ import React, {
         </SafeAreaView>
       );
     }
-  
+
     const handleToggleShuffle = () => {
       Alert.alert(
         'Shuffle Cards?',
@@ -113,7 +115,7 @@ import React, {
         ]
       );
     };
-  
+
     const handleSelect = (option) => {
       if (!showResult) {
         setSelected(option);
@@ -132,7 +134,7 @@ import React, {
         }
       }
     };
-  
+
     const handleNext = () => {
       if (currentIndex < currentDeck.cards.length - 1) {
         setCurrentIndex((prev) => prev + 1);
@@ -163,97 +165,134 @@ import React, {
         );
       }
     };
-  
+
     if (!currentDeck) {
       return null; // or loading indicator
     }
-  
+
     const currentCard = currentDeck.cards[currentIndex];
     const progress =
       ((score + missedCards.length) / currentDeck.cards.length) * 100;
     const displayIndex = currentIndex + 1;
-  
+
     return (
       <SafeAreaView
         style={[styles.container, isLight ? styles.light : styles.dark]}>
-        <View style={styles.deckHeader}>
+        {/* ---------- Top bar ---------- */}
+        <View style={styles.topBar}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
-            <AntDesign name="left" size={28} color="#777" />
-          </TouchableOpacity>
-          <Text
+            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
             style={[
-              styles.deckViewTitle,
-              isLight ? styles.textLight : styles.textDark,
-            ]}
-            numberOfLines={1}> {originalDeck.title}
-          </Text>
-          <View style={styles.headerRight}>
-            {streak > 1 && (
-              <View style={styles.streakBadge}>
-                <FontAwesome name="fire" size={13} color="#5829FF" />
-                <Text style={styles.streakText}>{streak}</Text>
-              </View>
-            )}
-            <TouchableOpacity
-              onPress={handleToggleShuffle}
-              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
-              style={styles.shuffleButton}>
-              <FontAwesome
-                name="random"
-                size={22}
-                color={isShuffled ? '#5829FF' : '#777'}
-              />
-            </TouchableOpacity>
+              styles.iconButton,
+              isLight ? styles.iconButtonLight : styles.iconButtonDark,
+            ]}>
+            <AntDesign name="left" size={20} color="#777" />
+          </TouchableOpacity>
+
+          <View style={styles.topBarCenter}>
+            <Text
+              style={[
+                styles.deckViewTitle,
+                isLight ? styles.textLight : styles.textDark,
+              ]}
+              numberOfLines={1}>
+              {originalDeck.title}
+            </Text>
+            <Text
+              style={[
+                styles.deckSubtitle,
+                isLight ? styles.subtitleLight : styles.subtitleDark,
+              ]}>
+              Card {displayIndex} of {currentDeck.cards.length}
+            </Text>
           </View>
+
+          <TouchableOpacity
+            onPress={handleToggleShuffle}
+            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+            style={[
+              styles.iconButton,
+              isLight ? styles.iconButtonLight : styles.iconButtonDark,
+            ]}>
+            <FontAwesome
+              name="random"
+              size={18}
+              color={isShuffled ? '#5829FF' : '#777'}
+            />
+          </TouchableOpacity>
         </View>
-  
-        <View style={styles.progressBarContainer}>
-          <View style={[styles.progressBar, { width: `${progress}%` }]} />
+
+        {/* ---------- Progress + streak row ---------- */}
+        <View style={styles.progressRow}>
+          <View style={styles.progressBarContainer}>
+            <View style={[styles.progressBar, { width: `${progress}%` }]} />
+          </View>
+          {streak > 1 && (
+            <View style={styles.streakBadge}>
+              <FontAwesome name="fire" size={12} color="#5829FF" />
+              <Text style={styles.streakText}>{streak}</Text>
+            </View>
+          )}
         </View>
-  
+
         {currentDeck.cards.length > 0 ? (
           <View style={styles.cardContainer}>
-            <View
-              style={[
-                styles.questionContainer,
-                isLight ? styles.cardFrontLight : styles.cardFrontDark,
-              ]}>
-              <Text style={styles.questionLabel}>QUESTION</Text>
+            <View style={styles.questionCard}>
+              <View style={styles.questionCardTop}>
+                <Text style={styles.questionLabel}>QUESTION</Text>
+                <Text style={styles.questionScore}>
+                  Score {score}
+                </Text>
+              </View>
               <Text
-                style={[styles.cardText, styles.textLight1]}
+                style={styles.cardText}
                 adjustsFontSizeToFit
                 minimumFontScale={0.7}
                 numberOfLines={5}>
                 {currentCard.question}
               </Text>
             </View>
+
             <View style={styles.optionsContainer}>
               {currentCard.options.map((option, idx) => {
                 const isCorrectOption = option === currentCard.answer;
                 const isSelectedOption = option === selected;
+
                 let optionStyle = [
                   styles.optionButton,
                   isLight ? styles.optionLight : styles.optionDark,
                 ];
+                let badgeStyle = [
+                  styles.optionBadge,
+                  isLight ? styles.optionBadgeLight : styles.optionBadgeDark,
+                ];
+                let badgeTextStyle = isLight
+                  ? styles.optionBadgeTextLight
+                  : styles.optionBadgeTextDark;
                 let textStyle = isLight ? styles.textLight : styles.textDark;
                 let icon = null;
+
                 if (showResult) {
                   if (isCorrectOption) {
                     optionStyle = [...optionStyle, styles.correctOption];
+                    badgeStyle = [...badgeStyle, styles.correctBadge];
+                    badgeTextStyle = styles.textLight1;
                     textStyle = styles.textLight1;
                     icon = (
                       <FontAwesome name="check-circle" size={18} color="#fff" />
                     );
                   } else if (isSelectedOption) {
                     optionStyle = [...optionStyle, styles.wrongOption];
+                    badgeStyle = [...badgeStyle, styles.wrongBadge];
+                    badgeTextStyle = styles.textLight1;
                     textStyle = styles.textLight1;
                     icon = (
                       <FontAwesome name="times-circle" size={18} color="#fff" />
                     );
                   }
                 }
+
                 return (
                   <TouchableOpacity
                     key={idx}
@@ -261,6 +300,11 @@ import React, {
                     onPress={() => handleSelect(option)}
                     disabled={showResult}
                     activeOpacity={0.75}>
+                    <View style={badgeStyle}>
+                      <Text style={[styles.optionBadgeText, badgeTextStyle]}>
+                        {OPTION_LETTERS[idx]}
+                      </Text>
+                    </View>
                     <Text
                       style={[styles.optionText, textStyle]}
                       adjustsFontSizeToFit
@@ -273,14 +317,21 @@ import React, {
                 );
               })}
             </View>
+
             {showResult && (
               <TouchableOpacity
                 style={styles.nextButton}
                 onPress={handleNext}
                 activeOpacity={0.85}>
                 <Text style={styles.nextButtonText}>
-                  {currentIndex < currentDeck.cards.length - 1 ? 'Next' : 'Finish'}
+                  {currentIndex < currentDeck.cards.length - 1 ? 'Next Question' : 'Finish'}
                 </Text>
+                <AntDesign
+                  name={currentIndex < currentDeck.cards.length - 1 ? 'right' : 'check-circle'}
+                  size={16}
+                  color="#fff"
+                  style={{ marginLeft: 8 }}
+                />
               </TouchableOpacity>
             )}
           </View>
@@ -296,27 +347,19 @@ import React, {
             </Text>
           </View>
         )}
-  
-        <View style={styles.deckControls}>
-          <Text
-            style={[
-              styles.cardCounter,
-              isLight ? styles.textLight : styles.textDark,
-            ]}>
-            {displayIndex} / {currentDeck.cards.length}
-          </Text>
-        </View>
       </SafeAreaView>
     );
   };
-  
+
   const styles = StyleSheet.create({
     container: { flex: 1 },
+    paddingTop: 10,
     light: { backgroundColor: '#f5f5f5' },
     dark: { backgroundColor: '#121212' },
     textLight: { color: '#000000' },
     textLight1: { color: '#ffffff' },
     textDark: { color: '#ffffff' },
+
     errorContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -342,27 +385,65 @@ import React, {
       fontSize: 16,
       fontWeight: 'bold',
     },
-    deckHeader: {
+
+    /* ---- Top bar ---- */
+    topBar: {
       flexDirection: 'row',
-      justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 20,
+      paddingHorizontal: 16,
       paddingTop: 10,
+      paddingBottom: 6,
+    },
+    iconButton: {
+      width: 38,
+      height: 38,
+      borderRadius: 19,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    iconButtonLight: {
+      backgroundColor: '#ffffff',
+    },
+    iconButtonDark: {
+      backgroundColor: '#212121',
+    },
+    topBarCenter: {
+      flex: 1,
+      alignItems: 'center',
+      marginHorizontal: 8,
     },
     deckViewTitle: {
       fontFamily: 'jaro',
-      fontSize: 24,
+      fontSize: 20,
       fontWeight: 'bold',
       textAlign: 'center',
-      flex: 1,
-      marginHorizontal: 10,
     },
-    headerRight: {
+    deckSubtitle: {
+      fontFamily: 'Inter-Black',
+      fontSize: 12,
+      marginTop: 2,
+    },
+    subtitleLight: { color: '#888' },
+    subtitleDark: { color: '#999' },
+
+    /* ---- Progress row ---- */
+    progressRow: {
       flexDirection: 'row',
       alignItems: 'center',
+      paddingHorizontal: 20,
+      marginTop: 8,
     },
-    shuffleButton: {
-      marginLeft: 10,
+    progressBarContainer: {
+      flex: 1,
+      height: 6,
+      backgroundColor: '#e0e0e0',
+      borderRadius: 3,
+      overflow: 'hidden',
+    },
+    progressBar: {
+      height: '100%',
+      backgroundColor: '#5829FF',
+      borderRadius: 3,
     },
     streakBadge: {
       flexDirection: 'row',
@@ -371,6 +452,7 @@ import React, {
       paddingHorizontal: 8,
       paddingVertical: 4,
       borderRadius: 12,
+      marginLeft: 10,
     },
     streakText: {
       fontFamily: 'Inter-Black',
@@ -379,30 +461,31 @@ import React, {
       color: '#5829FF',
       marginLeft: 4,
     },
+
+    /* ---- Card area ---- */
     cardContainer: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
       paddingHorizontal: 20,
+      paddingTop: 22,
     },
-    questionContainer: {
-      width: '95%',
-      height: 190,
-      borderRadius: 14,
-      padding: 22,
+    questionCard: {
+      width: '100%',
+      minHeight: 170,
+      borderRadius: 20,
+      padding: 24,
       justifyContent: 'center',
+      backgroundColor: '#5829FF',
+      elevation: 4,
+      shadowColor: '#5829FF',
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.3,
+      shadowRadius: 10,
+    },
+    questionCardTop: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
       alignItems: 'center',
-      elevation: 3,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 4,
-    },
-    cardFrontLight: { 
-      backgroundColor: '#5829FF' 
-    },
-    cardFrontDark: { 
-      backgroundColor: '#5829FF' 
+      marginBottom: 12,
     },
     questionLabel: {
       fontFamily: 'Inter-Black',
@@ -410,34 +493,66 @@ import React, {
       fontWeight: '700',
       letterSpacing: 1.5,
       color: 'rgba(255,255,255,0.65)',
-      marginBottom: 10,
+    },
+    questionScore: {
+      fontFamily: 'Inter-Black',
+      fontSize: 11,
+      fontWeight: '700',
+      color: 'rgba(255,255,255,0.65)',
     },
     cardText: {
-      fontSize: 16,
-      lineHeight: 22,
-      paddingHorizontal: 4,
-      textAlign: 'center',
+      fontSize: 17,
+      lineHeight: 23,
+      textAlign: 'left',
       fontWeight: '600',
+      color: '#ffffff',
     },
+
+    /* ---- Options ---- */
     optionsContainer: {
-      width: '95%',
-      marginTop: 18,
+      width: '100%',
+      marginTop: 20,
     },
     optionButton: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingVertical: 12,
-      paddingHorizontal: 16,
+      paddingVertical: 14,
+      paddingHorizontal: 14,
       marginVertical: 6,
-      borderRadius: 10,
+      borderRadius: 14,
     },
     optionLight: {
       backgroundColor: 'white',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.06,
+      shadowRadius: 3,
+      elevation: 1,
     },
     optionDark: {
-      backgroundColor: '#212121',
+      backgroundColor: '#1e1e1e',
     },
+    optionBadge: {
+      width: 28,
+      height: 28,
+      borderRadius: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 12,
+    },
+    optionBadgeLight: {
+      backgroundColor: '#f0edff',
+    },
+    optionBadgeDark: {
+      backgroundColor: '#2a2a2a',
+    },
+    optionBadgeText: {
+      fontFamily: 'Inter-Black',
+      fontSize: 13,
+      fontWeight: '700',
+    },
+    optionBadgeTextLight: { color: '#5829FF' },
+    optionBadgeTextDark: { color: '#b39dff' },
     optionText: {
       flex: 1,
       fontSize: 14,
@@ -450,16 +565,27 @@ import React, {
     correctOption: {
       backgroundColor: '#43A047',
     },
+    correctBadge: {
+      backgroundColor: 'rgba(255,255,255,0.25)',
+    },
     wrongOption: {
       backgroundColor: '#E53935',
     },
+    wrongBadge: {
+      backgroundColor: 'rgba(255,255,255,0.25)',
+    },
+
+    /* ---- Next button ---- */
     nextButton: {
+      flexDirection: 'row',
       backgroundColor: '#5829FF',
-      borderRadius: 8,
-      padding: 15,
-      marginTop: 20,
-      width: '95%',
+      borderRadius: 12,
+      padding: 16,
+      marginTop: 16,
+      marginBottom: 12,
+      width: '100%',
       alignItems: 'center',
+      justifyContent: 'center',
     },
     nextButtonText: {
       fontFamily: 'Inter-Black',
@@ -467,18 +593,8 @@ import React, {
       fontSize: 16,
       fontWeight: 'bold',
     },
-    deckControls: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      paddingVertical: 15,
-      paddingHorizontal: 20,
-    },
-    cardCounter: { 
-      fontFamily: 'Inter-Black', 
-      fontSize: 15, 
-      fontWeight: '600' 
-    },
+
+    /* ---- Empty state ---- */
     emptyDeckContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -492,18 +608,6 @@ import React, {
       marginBottom: 20,
       textAlign: 'center',
     },
-    progressBarContainer: {
-      height: 4,
-      backgroundColor: '#e0e0e0',
-      marginHorizontal: 20,
-      borderRadius: 2,
-      marginTop: 10,
-    },
-    progressBar: {
-      height: '100%',
-      backgroundColor: '#5829FF',
-      borderRadius: 2,
-    },
   });
-  
+
   export default TestModeScreen;

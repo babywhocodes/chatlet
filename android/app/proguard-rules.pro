@@ -12,3 +12,13 @@
 -keep class com.facebook.react.turbomodule.** { *; }
 
 # Add any project specific keep options here:
+
+# @generated begin expo-build-properties - expo prebuild (DO NOT MODIFY)
+-dontwarn com.stripe.android.pushProvisioning.**
+-keep class com.stripe.android.pushProvisioning.** { *; }
+-dontwarn org.checkerframework.**
+-dontwarn javax.annotation.**
+-dontwarn com.google.errorprone.annotations.**
+-dontwarn com.google.android.gms.**
+-keep class com.google.android.gms.** { *; }
+# @generated end expo-build-properties

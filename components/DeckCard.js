@@ -14,17 +14,17 @@ const DeckCard = ({ deck, onDelete, onFlashcardMode, onTestMode }) => {
         accessibilityLabel={`View deck: ${deck.title}`}
         accessibilityRole="button"
       >
-        <Text style={styles.deckTitle} numberOfLines={1} ellipsizeMode="tail">
+        <Text style={styles.deckTitle} allowFontScaling={false} numberOfLines={1} ellipsizeMode="tail">
           {deck.title}
         </Text>
-        <Text style={styles.deckTopic} numberOfLines={2} ellipsizeMode="tail">
+        <Text style={styles.deckTopic} allowFontScaling={false} numberOfLines={2} ellipsizeMode="tail">
           {deck.description}
         </Text>
         <View style={styles.deckFooter}>
-          <Text style={styles.deckStats}>
+          <Text style={styles.deckStats} allowFontScaling={false}>
             {deck.cards.length} {deck.cards.length === 1 ? 'card' : 'cards'}
           </Text>
-          <Text style={styles.deckStats}>
+          <Text style={styles.deckStats} allowFontScaling={false}>
             {new Date(deck.createdAt).toLocaleDateString()}
           </Text>
         </View>
@@ -44,10 +44,10 @@ const DeckCard = ({ deck, onDelete, onFlashcardMode, onTestMode }) => {
       <Collapsible collapsed={collapsed}>
         <View style={styles.expandArea}>
           <TouchableOpacity style={styles.optionButton} onPress={onFlashcardMode}>
-            <Text style={styles.optionText}>Flashcard Mode</Text>
+            <Text style={styles.optionText} allowFontScaling={false}>Flashcard Mode</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.optionButton} onPress={onTestMode}>
-            <Text style={styles.optionText}>Test Mode</Text>
+            <Text style={styles.optionText} allowFontScaling={false}>Test Mode</Text>
           </TouchableOpacity>
         </View>
       </Collapsible>

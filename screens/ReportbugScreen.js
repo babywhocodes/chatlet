@@ -34,11 +34,13 @@ const styles = StyleSheet.create({
   light: {
     backgroundColor: '#f5f5f5',
     flex: 1,
+    paddingTop: 10,
     padding: 8,
   },
   dark: {
     backgroundColor: '#121212',
     flex: 1,
+    paddingTop: 10,
     padding: 8,
   },
   close: {

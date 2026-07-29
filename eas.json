@@ -9,11 +9,13 @@
     },
     "production": {
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle",
+        "autoIncrement": true
       }
     }
   },
   "cli": {
-    "version": ">= 3.0.0"
+    "version": ">= 3.0.0",
+    "appVersionSource": "remote"
   }
 }

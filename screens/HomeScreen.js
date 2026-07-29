@@ -133,7 +133,7 @@ const handleDeckCreated = useCallback((deck) => {
     <SafeAreaView
       style={[styles.container, isLight ? styles.light : styles.dark]}>
       <View style={styles.header}>
-        <Text style={styles.headtext}>CHATLET</Text>
+        <Text style={styles.headtext} allowFontScaling={false}>CHATLET</Text>
         <TouchableOpacity
           onPress={handleSettings}
           disabled={isNavigating}
@@ -146,11 +146,11 @@ const handleDeckCreated = useCallback((deck) => {
         <TouchableOpacity
           style={isLight ? styles.creatorLight : styles.creatorDark}
           onPress={() => navigation.navigate('CreateFlashcard', { onSave: handleDeckCreated })}>
-          <Text style={styles.creatorText}>✨ Generate New Flashcard</Text>
+          <Text style={styles.creatorText} allowFontScaling={false}>✨ Generate New Flashcard</Text>
         </TouchableOpacity>
       </View>
     <View style={styles.historyContainer}>
-      <Text style={styles.htext}>History ⤷</Text>
+      <Text style={styles.htext} allowFontScaling={false}>History ⤷</Text>
 
       <FlatList
         data={[...decks].reverse()}
@@ -167,8 +167,8 @@ const handleDeckCreated = useCallback((deck) => {
         ListEmptyComponent={
           !loading ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No flashcard decks found</Text>
-              <Text style={styles.emptySubtext}>
+              <Text style={styles.emptyText} allowFontScaling={false}>No flashcard decks found</Text>
+              <Text style={styles.emptySubtext} allowFontScaling={false}>
                 Create your first deck to get started
               </Text>
             </View>
@@ -188,6 +188,7 @@ const handleDeckCreated = useCallback((deck) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 10,
   },
   light: {
     backgroundColor: '#f5f5f5',
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
   },
   headtext: {
     fontFamily: 'jaro',
-    fontSize: 45,
+    fontSize: 40,
     color: '#5829FF',
   },
   create: {
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
   },
   creatorText: {
     fontFamily: 'Inter-Black',
-    fontSize: 25,
+    fontSize: 20,
     color: '#ffffff',
   },
   htext: {

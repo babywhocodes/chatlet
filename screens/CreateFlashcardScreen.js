@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import FlashcardPreview from '../components/FlashcardPreview';
-import { API_KEY, API_URL, MAX_CARDS, MIN_CARDS, STORAGE_KEY } from '../constants/config';
+import { API_URL, MAX_CARDS, MIN_CARDS, STORAGE_KEY } from '../constants/config';
 import { saveDeck as saveDeckToStorage } from '../utils/storage';
 import { ThemeContext } from '../context/ThemeContext';
 
@@ -103,13 +103,12 @@ Example format:
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           model: 'accounts/fireworks/models/gpt-oss-120b',
           messages: [{ role: 'user', content: prompt }],
-          max_tokens: 600,
+          max_tokens: 1300,
           top_p: 1,
           top_k: 40,
           presence_penalty: 0,
@@ -271,6 +270,7 @@ Example format:
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 10,
   },
   light: {
     backgroundColor: '#f5f5f5',

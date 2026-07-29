@@ -23,7 +23,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.babywhocodes.chatlet"
+      "package": "com.babywhocodes.chatlet",
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,14 +35,26 @@
       "expo-font",
       "expo-web-browser",
       "expo-secure-store",
-      "expo-router"
+      "expo-router",
+     [
+  "expo-build-properties",
+  {
+    "android": {
+      "enableProguardInReleaseBuilds": true,
+      "enableShrinkResourcesInReleaseBuilds": true,
+      "extraProguardRules": "-dontwarn com.stripe.android.pushProvisioning.**\n-keep class com.stripe.android.pushProvisioning.** { *; }\n-dontwarn org.checkerframework.**\n-dontwarn javax.annotation.**\n-dontwarn com.google.errorprone.annotations.**\n-dontwarn com.google.android.gms.**\n-keep class com.google.android.gms.** { *; }"
+    }
+  }
+]
     ],
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "bd046a94-e822-41d5-b550-30795bd81dbb"
+        "projectId": "07a8873c-56c7-48ec-a95c-7bcdb1c6108d"
       }
     },
-    "owner": "reallbadiees-team"
+    "cli": {
+      "appVersionSource": "remote"
+    }
   }
 }
