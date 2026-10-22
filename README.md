@@ -39,20 +39,12 @@ Chatlet is available on [Google Play](https://play.google.com/store/apps/details
   <img src="docs/screenshots/quiz.png" width="200" alt="Quiz mode" />
 </p>
 
-## Tech Stack
-
-<!-- Fill in to match the project -->
-- **Language / framework**: _e.g. Kotlin, Flutter, React Native_
-- **AI backend**: _e.g. LLM API used for deck generation_
-- **Local storage**: _e.g. Room, SQLite, Hive_
-- **Ads**: _e.g. AdMob_
-
 ## Getting Started
 
 ### Prerequisites
 
-- _e.g. Android Studio (latest stable) / Flutter SDK / Node.js_
-- An Android device or emulator running Android _X.X_ or higher
+-  / Node.js_
+- An Android device or emulator running Android _7.0-_ or higher
 - An API key for the AI provider (see [Configuration](#configuration))
 
 ### Installation
@@ -61,7 +53,7 @@ Chatlet is available on [Google Play](https://play.google.com/store/apps/details
 # Clone the repository
 git clone https://github.com/babywhocodes/chatlet.git
 cd chatlet
-
+npm install
 # Install dependencies
 # (replace with your project's command)
 ```
@@ -72,7 +64,6 @@ Create a config file (for example `.env` or `local.properties`) in the project r
 
 ```properties
 AI_API_KEY=your_api_key_here
-ADMOB_APP_ID=your_admob_app_id_here
 ```
 
 > **Never commit real API keys.** Make sure this file is listed in `.gitignore`.
@@ -80,19 +71,9 @@ ADMOB_APP_ID=your_admob_app_id_here
 ### Run
 
 ```bash
-# Replace with your project's run command
+npx expo start
 ```
 
-## Project Structure
-
-<!-- Update to reflect the real layout -->
-```
-chatlet/
-├── app/            # Application source
-├── docs/           # Documentation and screenshots
-├── LICENSE
-└── README.md
-```
 
 ## Contributing
 
